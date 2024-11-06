@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Joke Generator</title>
+    <style>
+        div {
+            background-color: #385170;
+            height: 500px;
+            width: 500px;
+            align-items: center;
+            text-align: center;
+            margin-top: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        h1 {
+            padding-top: 30px;
+            color: wheat;
+        }
+        input {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #142d4c;
+            height: 50px;
+            width: 120px;
+            color: wheat;
+            border: none;
+            cursor: pointer;
+        }
+        textarea {
+            margin-top: 20px;
+            background-color: #142d4c;
+            color: wheat;
+            height: 200px;
+            width: 300px;
+            border: none;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <div>
+            <h1>Random Joke Generator</h1>
+            <p id="jokeDisplay"></p>
+            <textarea id="jokeText" readonly></textarea>
+            <input type="button" value="Get Joke" id="createJoke">
+            <input type="button" value="Clear" id="clearJoke">
+        </div>
+    </center>
+
+    <script>
+        const jokeText = document.getElementById("jokeText");
+        const createJokeButton = document.getElementById("createJoke");
+        const clearJokeButton = document.getElementById("clearJoke");
+
+        async function fetchJoke() {
+            try {
+                const response = await fetch("https://v2.jokeapi.dev/joke/Any");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch joke");
+                }
+                const data = await response.json();
+                
+                // Display joke based on the response format
+                if (data.type === "single") {
+                    jokeText.value = data.joke;
+                } else {
+                    jokeText.value = `${data.setup} - ${data.punchline}`;
+                }
+            } catch (error) {
+                jokeText.value = "Oops! Something went wrong. Please try again.";
+            }
+        }
+
+        // Event listeners for button clicks
+        createJokeButton.addEventListener("click", fetchJoke);
+        clearJokeButton.addEventListener("click", () => {
+            jokeText.value = "";
+        });
+    </script>
+</body>
+</html>
